@@ -2,7 +2,7 @@
            (replacing the palceholder with your Github name):
            https://api.github.com/users/<your name>
 */
-axios.get('https:api.github.com/users/aldairbalanzar')
+
 
   /* Step 2: Inspect and study the data coming back, this is YOUR 
      github info! You will need to understand the structure of this 
@@ -10,30 +10,19 @@ axios.get('https:api.github.com/users/aldairbalanzar')
   
      Skip to Step 3.
   */
-  .then(res => {
-    entry.append(createCard(res));
-  })
-  .catch(res => {
-    console.log('failed to load user card', res);
-  })
+
 /* Step 4: Pass the data received from Github into your function, 
            create a new component and add it to the DOM as a child of .cards
-
-<div class="card">
-  <img src={image url of user} />
-  <div class="card-info">
-    <h3 class="name">{users name}</h3>
-    <p class="username">{users user name}</p>
-    <p>Location: {users location}</p>
-    <p>Profile:
-      <a href={address to users github page}>{address to users github page}</a>
-    </p>
-    <p>Followers: {users followers count}</p>
-    <p>Following: {users following count}</p>
-    <p>Bio: {users bio}</p>
-  </div>
-</div>
 */
+
+axios.get('https:api.github.com/users/aldairbalanzar')
+.then(res => {
+  entry.append(createCard(res));
+})
+.catch(res => {
+  console.log('failed to load user card', res);
+})
+
 function createCard(obj) {
   let card = document.createElement('div'),
     cardImg = document.createElement('img'),
@@ -64,16 +53,31 @@ function createCard(obj) {
     cardUsername.classList.add('username');
 
     profile.append(gitLink);
-    cardDiv.append(cardName, cardUsername, location, profile, followers, following, bio)
+    cardDiv.append(cardName, cardUsername, location, profile, followers, following, bio);
     card.append(cardImg, cardDiv);
 
     console.log(card);
-    console.log(obj)
     return card;
 }
 
+
+
 const entry = document.querySelector('.cards');
 
+axios.get(`https:api.github.com/users/aldairbalanzar/followers`)
+.then(res => {
+  console.log(res.data);
+  res.data.forEach(item => {
+    axios.get(item.url)
+    .then(res => {
+      console.log(res);
+      entry.append(createCard(res));
+    })
+  });
+})
+.catch(res => {
+  console.log('you have no friends', res);
+})
 /* Step 5: Now that you have your own card getting added to the DOM, either 
           follow this link in your browser https://api.github.com/users/<Your github name>/followers 
           , manually find some other users' github handles, or use the list found 
@@ -84,14 +88,14 @@ const entry = document.querySelector('.cards');
           user, and adding that card to the DOM.
 */
 
-const followersArray = ['kkslider2130', 'biskoi', 'reidysj', 'scottSmith23', 'ArtmanG'];
+// const followersArray = ['kkslider2130', 'biskoi', 'reidysj', 'scottSmith23', 'ArtmanG'];
 
-followersArray.forEach(item => {
-  axios.get(`https:api.github.com/users/${item}`)
-  .then(res => {
-    entry.append(createCard(res));
-  })
-})
+// followersArray.forEach(item => {
+//   axios.get(`https:api.github.com/users/${item}`)
+//   .then(res => {
+//     entry.append(createCard(res));
+//   })
+// })
 
 
 /* Step 3: Create a function that accepts a single object as its only argument,
